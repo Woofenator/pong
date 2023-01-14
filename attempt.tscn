@@ -1,16 +1,20 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://ball.png" type="Texture" id=1]
 [ext_resource path="res://paddle_middle.png" type="Texture" id=2]
 [ext_resource path="res://paddle_end.png" type="Texture" id=3]
+[ext_resource path="res://Paddle.gd" type="Script" id=4]
 [ext_resource path="res://Ball.gd" type="Script" id=5]
+[ext_resource path="res://dashed.png" type="Texture" id=6]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 9.0
 
-[sub_resource type="CapsuleShape2D" id=2]
-radius = 16.0
-height = 100.0
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 16, 64 )
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 16, 64 )
 
 [sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 512, 10 )
@@ -24,6 +28,16 @@ extents = Vector2( 10, 288 )
 current = true
 zoom = Vector2( 0.75, 0.75 )
 
+[node name="Score" type="Node" parent="."]
+
+[node name="Line2D" type="Line2D" parent="Score"]
+z_index = -1
+points = PoolVector2Array( 0, 280, 0, -280 )
+width = 4.0
+default_color = Color( 1, 1, 1, 1 )
+texture = ExtResource( 6 )
+texture_mode = 1
+
 [node name="Ball" type="KinematicBody2D" parent="."]
 script = ExtResource( 5 )
 
@@ -34,63 +48,65 @@ shape = SubResource( 1 )
 scale = Vector2( 4, 4 )
 texture = ExtResource( 1 )
 
-[node name="Paddle2" type="Area2D" parent="."]
+[node name="PaddleLeft" type="Area2D" parent="."]
 position = Vector2( 448, 0 )
+script = ExtResource( 4 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Paddle2"]
-shape = SubResource( 2 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaddleLeft"]
+shape = SubResource( 6 )
 
-[node name="PaddleTop" type="Sprite" parent="Paddle2"]
+[node name="PaddleTop" type="Sprite" parent="PaddleLeft"]
 modulate = Color( 0, 0, 1, 1 )
 position = Vector2( 0, -48 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 3 )
 
-[node name="PaddleBottom" type="Sprite" parent="Paddle2"]
+[node name="PaddleBottom" type="Sprite" parent="PaddleLeft"]
 modulate = Color( 0, 0, 1, 1 )
 position = Vector2( 0, 48 )
 rotation = -3.14159
 scale = Vector2( 8, 8 )
 texture = ExtResource( 3 )
 
-[node name="Middle1" type="Sprite" parent="Paddle2"]
+[node name="Middle1" type="Sprite" parent="PaddleLeft"]
 modulate = Color( 0, 0, 1, 1 )
 position = Vector2( 0, -16 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 2 )
 
-[node name="Middle2" type="Sprite" parent="Paddle2"]
+[node name="Middle2" type="Sprite" parent="PaddleLeft"]
 modulate = Color( 0, 0, 1, 1 )
 position = Vector2( 0, 16 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 2 )
 
-[node name="Paddle" type="Area2D" parent="."]
-position = Vector2( -448, 0 )
+[node name="PaddleRight" type="Area2D" parent="."]
+position = Vector2( -448, -48 )
+script = ExtResource( 4 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Paddle"]
-shape = SubResource( 2 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaddleRight"]
+shape = SubResource( 7 )
 
-[node name="PaddleTop" type="Sprite" parent="Paddle"]
+[node name="PaddleTop" type="Sprite" parent="PaddleRight"]
 modulate = Color( 0, 1, 0, 1 )
 position = Vector2( 0, -48 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 3 )
 
-[node name="PaddleBottom" type="Sprite" parent="Paddle"]
+[node name="PaddleBottom" type="Sprite" parent="PaddleRight"]
 modulate = Color( 0, 1, 0, 1 )
 position = Vector2( 0, 48 )
 rotation = -3.14159
 scale = Vector2( 8, 8 )
 texture = ExtResource( 3 )
 
-[node name="Middle1" type="Sprite" parent="Paddle"]
+[node name="Middle1" type="Sprite" parent="PaddleRight"]
 modulate = Color( 0, 1, 0, 1 )
 position = Vector2( 0, -16 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 2 )
 
-[node name="Middle2" type="Sprite" parent="Paddle"]
+[node name="Middle2" type="Sprite" parent="PaddleRight"]
 modulate = Color( 0, 1, 0, 1 )
 position = Vector2( 0, 16 )
 scale = Vector2( 8, 8 )
@@ -121,3 +137,10 @@ shape = SubResource( 5 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Left"]
 position = Vector2( -488, 0 )
 shape = SubResource( 5 )
+
+[connection signal="ball_bounce" from="PaddleLeft" to="Ball" method="_on_Paddle_ball_bounce"]
+[connection signal="body_entered" from="PaddleLeft" to="PaddleLeft" method="_on_Paddle_body_entered"]
+[connection signal="ball_bounce" from="PaddleRight" to="Ball" method="_on_Paddle_ball_bounce"]
+[connection signal="body_entered" from="PaddleRight" to="PaddleRight" method="_on_Paddle_body_entered"]
+[connection signal="area_entered" from="Walls/Right" to="Ball" method="_on_Right_area_entered"]
+[connection signal="area_entered" from="Walls/Left" to="Ball" method="_on_Left_area_entered"]

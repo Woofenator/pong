@@ -1,16 +1,11 @@
-extends KinematicBody2D
+extends Area2D
 
+signal ball_bounce(direction)
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+func _on_Paddle_body_entered(body: PhysicsBody2D):
+	var bodyPosition = body.global_position;
+	var directionVector = global_position.direction_to(bodyPosition);
+	
+	print(directionVector);
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	emit_signal("ball_bounce", directionVector)

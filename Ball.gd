@@ -4,16 +4,34 @@ extends KinematicBody2D
 # var a = 2
 # var b = "text"
 
+var speed = 500
+var initialDirection = Vector2.RIGHT;
+var velocity = initialDirection * speed;
+
+func resetBall(direction: Vector2):
+	global_position = Vector2.ZERO
+	velocity = speed * direction;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
-var velocity = Vector2(100,0);
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	var collision = move_and_collide(velocity * delta)
 	if collision:
-			print("I collided with ", collision.collider.name)
+			print(collision.collider.name)
+			velocity=velocity.bounce(collision.normal)
 
+
+
+func _on_Paddle_ball_bounce(angle: Vector2):
+	velocity = angle*speed;
+
+func _on_Left_area_entered():
+	print("LEFT")
+	resetBall(Vector2.RIGHT)
+
+func _on_Right_area_entered():
+	print("RIGHT")
+	resetBall(Vector2.LEFT)
