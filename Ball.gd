@@ -28,10 +28,10 @@ func _physics_process(delta):
 func _on_Paddle_ball_bounce(angle: Vector2):
 	velocity = angle*speed;
 
-func _on_Left_area_entered():
+func _on_Left_body_entered():
 	print("LEFT")
 	resetBall(Vector2.RIGHT)
 
-func _on_Right_area_entered():
+func _on_Right_body_entered():
 	print("RIGHT")
 	resetBall(Vector2.LEFT)
