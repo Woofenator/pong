@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://ball.png" type="Texture" id=1]
 [ext_resource path="res://paddle_middle.png" type="Texture" id=2]
@@ -6,7 +6,6 @@
 [ext_resource path="res://Paddle.gd" type="Script" id=4]
 [ext_resource path="res://Ball.gd" type="Script" id=5]
 [ext_resource path="res://dashed.png" type="Texture" id=6]
-[ext_resource path="res://Goal.gd" type="Script" id=7]
 [ext_resource path="res://Goal.gd" type="Script" id=8]
 
 [sub_resource type="CircleShape2D" id=1]
@@ -22,7 +21,7 @@ extents = Vector2( 16, 64 )
 extents = Vector2( 512, 10 )
 
 [sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 17, 288 )
+extents = Vector2( 17, 270 )
 
 [node name="Node2D" type="Node2D"]
 
@@ -136,7 +135,7 @@ position = Vector2( 496, 0 )
 shape = SubResource( 5 )
 
 [node name="Left" type="Area2D" parent="Walls"]
-script = ExtResource( 7 )
+script = ExtResource( 8 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/Left"]
 position = Vector2( -495, 0 )
@@ -146,5 +145,7 @@ shape = SubResource( 5 )
 [connection signal="body_entered" from="PaddleLeft" to="PaddleLeft" method="_on_Paddle_body_entered"]
 [connection signal="ball_bounce" from="PaddleRight" to="Ball" method="_on_Paddle_ball_bounce"]
 [connection signal="body_entered" from="PaddleRight" to="PaddleRight" method="_on_Paddle_body_entered"]
-[connection signal="body_entered" from="Walls/Right" to="Ball" method="_on_Right_body_entered"]
-[connection signal="body_entered" from="Walls/Left" to="Ball" method="_on_Left_body_entered"]
+[connection signal="body_entered" from="Walls/Right" to="Walls/Right" method="_on_Right_body_entered"]
+[connection signal="reset_ball" from="Walls/Right" to="Ball" method="resetBall"]
+[connection signal="body_entered" from="Walls/Left" to="Walls/Left" method="_on_Left_body_entered"]
+[connection signal="reset_ball" from="Walls/Left" to="Ball" method="resetBall"]

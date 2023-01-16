@@ -1,5 +1,8 @@
 extends Area2D
 
+var Ball = preload("Ball.gd")
+
+signal reset_ball(direction)
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -14,3 +17,13 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+
+func _on_Left_body_entered(body:Node):
+	if body is Ball:
+		emit_signal('reset_ball', Vector2.RIGHT)
+
+
+func _on_Right_body_entered(body:Node):
+	if body is Ball:
+		emit_signal('reset_ball', Vector2.LEFT)
