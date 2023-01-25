@@ -4,11 +4,15 @@ extends KinematicBody2D
 # var a = 2
 # var b = "text"
 
-var speed = 500
+export var intialSpeed = 500
+export var speedIncrease = 0.1;
+
+var speed = intialSpeed;
 var initialDirection = Vector2.RIGHT;
 var velocity = initialDirection * speed;
 
 func resetBall(direction: Vector2):
+	speed = intialSpeed
 	global_position = Vector2.ZERO
 	velocity = speed * direction;
 
@@ -23,8 +27,7 @@ func _physics_process(delta):
 			print(collision.collider.name)
 			velocity=velocity.bounce(collision.normal)
 
-
-
 func _on_Paddle_ball_bounce(angle: Vector2):
 	velocity = angle*speed;
+	speed += speed * speedIncrease;
 
