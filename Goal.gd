@@ -3,6 +3,7 @@ extends Area2D
 var Ball = preload("Ball.gd")
 
 signal reset_ball(direction)
+signal add_score()
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -18,12 +19,14 @@ func _ready():
 #func _process(delta):
 #	pass
 
-
 func _on_Left_body_entered(body:Node):
 	if body is Ball:
+		$Score.play()
+		emit_signal("add_score")
 		emit_signal('reset_ball', Vector2.RIGHT)
-
 
 func _on_Right_body_entered(body:Node):
 	if body is Ball:
+		$Score.play()
+		emit_signal("add_score")
 		emit_signal('reset_ball', Vector2.LEFT)

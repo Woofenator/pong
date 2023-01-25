@@ -1,13 +1,17 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://ball.png" type="Texture" id=1]
 [ext_resource path="res://paddle_middle.png" type="Texture" id=2]
 [ext_resource path="res://paddle_end.png" type="Texture" id=3]
-[ext_resource path="res://Paddle.gd" type="Script" id=4]
+[ext_resource path="res://hud.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Ball.gd" type="Script" id=5]
 [ext_resource path="res://dashed.png" type="Texture" id=6]
 [ext_resource path="res://Paddle.gd" type="Script" id=7]
 [ext_resource path="res://Goal.gd" type="Script" id=8]
+[ext_resource path="res://Main.gd" type="Script" id=9]
+[ext_resource path="res://Sounds/paddle.ogg" type="AudioStream" id=10]
+[ext_resource path="res://Sounds/wall.ogg" type="AudioStream" id=11]
+[ext_resource path="res://Sounds/score.mp3" type="AudioStream" id=12]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 9.0
@@ -22,6 +26,7 @@ extents = Vector2( 512, 10 )
 extents = Vector2( 17, 270 )
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource( 9 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
@@ -48,9 +53,16 @@ shape = SubResource( 1 )
 scale = Vector2( 4, 4 )
 texture = ExtResource( 1 )
 
+[node name="WallHit" type="AudioStreamPlayer2D" parent="Ball"]
+stream = ExtResource( 11 )
+
+[node name="Timer" type="Timer" parent="Ball"]
+wait_time = 1.5
+one_shot = true
+
 [node name="PaddleRight2" type="Area2D" parent="."]
 position = Vector2( 448, 0 )
-script = ExtResource( 4 )
+script = ExtResource( 7 )
 __meta__ = {
 "_edit_group_": true
 }
@@ -84,6 +96,9 @@ modulate = Color( 0, 0, 1, 1 )
 position = Vector2( 0, 16 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 2 )
+
+[node name="Hit" type="AudioStreamPlayer2D" parent="PaddleRight2"]
+stream = ExtResource( 10 )
 
 [node name="PaddleLeft" type="Area2D" parent="."]
 position = Vector2( -448, 0 )
@@ -122,6 +137,9 @@ position = Vector2( 0, 16 )
 scale = Vector2( 8, 8 )
 texture = ExtResource( 2 )
 
+[node name="Hit" type="AudioStreamPlayer2D" parent="PaddleLeft"]
+stream = ExtResource( 10 )
+
 [node name="Walls" type="Node" parent="."]
 
 [node name="Top" type="StaticBody2D" parent="Walls"]
@@ -143,6 +161,11 @@ script = ExtResource( 8 )
 position = Vector2( 496, 0 )
 shape = SubResource( 5 )
 
+[node name="Score" type="AudioStreamPlayer2D" parent="Walls/Right"]
+position = Vector2( -450, 0 )
+stream = ExtResource( 12 )
+volume_db = -10.0
+
 [node name="Left" type="Area2D" parent="Walls"]
 script = ExtResource( 8 )
 
@@ -150,11 +173,21 @@ script = ExtResource( 8 )
 position = Vector2( -495, 0 )
 shape = SubResource( 5 )
 
+[node name="Score" type="AudioStreamPlayer2D" parent="Walls/Left"]
+position = Vector2( 450, 0 )
+stream = ExtResource( 12 )
+volume_db = -10.0
+
+[node name="HUD" parent="." instance=ExtResource( 4 )]
+
 [connection signal="ball_bounce" from="PaddleRight2" to="Ball" method="_on_Paddle_ball_bounce"]
 [connection signal="body_entered" from="PaddleRight2" to="PaddleRight2" method="_on_Paddle_body_entered"]
 [connection signal="ball_bounce" from="PaddleLeft" to="Ball" method="_on_Paddle_ball_bounce"]
 [connection signal="body_entered" from="PaddleLeft" to="PaddleLeft" method="_on_Paddle_body_entered"]
+[connection signal="add_score" from="Walls/Right" to="." method="_on_Right_add_score"]
 [connection signal="body_entered" from="Walls/Right" to="Walls/Right" method="_on_Right_body_entered"]
 [connection signal="reset_ball" from="Walls/Right" to="Ball" method="resetBall"]
+[connection signal="add_score" from="Walls/Left" to="." method="_on_Left_add_score"]
 [connection signal="body_entered" from="Walls/Left" to="Walls/Left" method="_on_Left_body_entered"]
 [connection signal="reset_ball" from="Walls/Left" to="Ball" method="resetBall"]
+[connection signal="start_game" from="HUD" to="Ball" method="_on_HUD_start_game"]

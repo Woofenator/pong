@@ -20,6 +20,7 @@ func _on_Paddle_body_entered(body: PhysicsBody2D):
 		directionVector.y /= 2;
 
 		emit_signal("ball_bounce", directionVector.normalized())
+		$Hit.play()
 
 func _physics_process(delta):
 	var speed = 0;
