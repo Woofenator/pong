@@ -33,8 +33,8 @@ func resetBall(direction: Vector2):
 func _physics_process(delta):
 	var collision = move_and_collide(velocity * delta)
 	if collision:
-			velocity=velocity.bounce(collision.normal)
-			$WallHit.play()
+		velocity=velocity.bounce(collision.normal)
+		$WallHit.play()
 
 func _on_Paddle_ball_bounce(angle: Vector2):
 	velocity = angle*speed;
